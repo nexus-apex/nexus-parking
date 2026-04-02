@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} ParkingSpot | NexusParking{% endblock %}
+{% block page_title %}{% if editing %}Edit ParkingSpot{% else %}New ParkingSpot{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Spot Id</label>
+        <input type="text" name="spot_id" value="{{ record.spot_id|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Zone</label>
+        <input type="text" name="zone" value="{{ record.zone|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Spot Type</label>
+        <select name="spot_type">
+          <option value="standard" {% if record.spot_type == 'standard' %}selected{% endif %}>Standard</option>
+          <option value="compact" {% if record.spot_type == 'compact' %}selected{% endif %}>Compact</option>
+          <option value="handicap" {% if record.spot_type == 'handicap' %}selected{% endif %}>Handicap</option>
+          <option value="ev_charging" {% if record.spot_type == 'ev_charging' %}selected{% endif %}>EV Charging</option>
+          <option value="vip" {% if record.spot_type == 'vip' %}selected{% endif %}>VIP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Floor</label>
+        <input type="text" name="floor" value="{{ record.floor|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Rate Per Hour</label>
+        <input type="number" step="0.01" name="rate_per_hour" value="{{ record.rate_per_hour|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="available" {% if record.status == 'available' %}selected{% endif %}>Available</option>
+          <option value="occupied" {% if record.status == 'occupied' %}selected{% endif %}>Occupied</option>
+          <option value="reserved" {% if record.status == 'reserved' %}selected{% endif %}>Reserved</option>
+          <option value="maintenance" {% if record.status == 'maintenance' %}selected{% endif %}>Maintenance</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} ParkingSpot</button>
+      <a href="/parkingspots/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
