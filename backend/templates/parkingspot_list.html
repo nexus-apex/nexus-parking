@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Parkingspots | NexusParking{% endblock %}
+{% block page_title %}Parkingspots{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search parkingspots...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Spot Type</option>
+      <option value="standard" {% if status_filter == 'standard' %}selected{% endif %}>Standard</option>
+      <option value="compact" {% if status_filter == 'compact' %}selected{% endif %}>Compact</option>
+      <option value="handicap" {% if status_filter == 'handicap' %}selected{% endif %}>Handicap</option>
+      <option value="ev_charging" {% if status_filter == 'ev_charging' %}selected{% endif %}>EV Charging</option>
+      <option value="vip" {% if status_filter == 'vip' %}selected{% endif %}>VIP</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/parkingspots/create/" class="btn btn-primary">+ New ParkingSpot</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Spot Id</th><th>Zone</th><th>Spot Type</th><th>Floor</th><th>Rate Per Hour</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/parkingspots/{{ r.pk }}/edit/"><strong>{{ r.spot_id }}</strong></a></td>
+        <td>{{ r.zone|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_spot_type_display }}</span></td>
+        <td>{{ r.floor|default:"-" }}</td>
+        <td>{{ r.rate_per_hour|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/parkingspots/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/parkingspots/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No parkingspots found.</p>
+    <a href="/parkingspots/create/" class="btn btn-primary" style="margin-top:1rem">Create ParkingSpot</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
