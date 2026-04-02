@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusParking{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Parkingspots</div>
+    <div class="stat-value">{{ parkingspot_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Parkingbookings</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ parkingbooking_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Parkingvehicles</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ parkingvehicle_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Rate Per Hour</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ parkingspot_total_rate_per_hour|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Parkingspots</h3>
+    <a href="/parkingspots/create/" class="btn btn-primary btn-sm">+ New ParkingSpot</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Spot Id</th><th>Zone</th><th>Spot Type</th><th>Floor</th><th>Rate Per Hour</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/parkingspots/{{ r.pk }}/edit/">{{ r.spot_id }}</a></td>
+        <td>{{ r.zone|default:"-" }}</td><td><span class="badge badge-blue">{{ r.get_spot_type_display }}</span></td><td>{{ r.floor|default:"-" }}</td><td>{{ r.rate_per_hour|floatformat:2 }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/parkingspots/create/" class="btn btn-primary" style="margin-top:1rem">Create First ParkingSpot</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
